@@ -1,2 +1,2 @@
-> [!edit]
+> [!NOTE]
 > testing
