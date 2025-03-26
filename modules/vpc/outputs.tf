@@ -1,19 +1,20 @@
-output "network_id" {
-    description = "the id of the created network"
-    value       = "${openstack_networking_network_v2.network.id}"
+# output "vpc_id" {
+#   description = "The ID of the created VPC"
+#   value       = opentelekomcloud_vpc_v1.vpc.id
+# }
+
+output "vpc_id" {
+  description = "The ID of the created VPC"
+  value = opentelekomcloud_vpc_v1.vpc.id
 }
 
-output "router_id" {
-    description = "the id of the created router"
-    value       = "${openstack_networking_router_v2.router.id}"
+output "subnet_ids" {
+  value = {
+    "subnet-1" = opentelekomcloud_vpc_subnet_v1.subnet1.id
+    "subnet-2" = opentelekomcloud_vpc_subnet_v1.subnet2.id
+    "subnet-3" = opentelekomcloud_vpc_subnet_v1.subnet3.id
+  }
 }
 
-output "interface_port" {
-    description = "the port id of the created router interface"
-    value       = "${openstack_networking_router_interface_v2.interface.port_id}"
-}
 
-output "subnet_id" {
-    description = "the id of the created subnet"
-    value       = "${openstack_networking_subnet_v2.subnet.id}"
-}
+
