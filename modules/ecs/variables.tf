@@ -1,18 +1,25 @@
 variable "instances" {
   type = list(object({
-    name                 = string
-    flavor               = string
-    image_id             = string
-    subnet_names         = list(string) 
-    security_group_names = list(string)
-    availability_zone    = string  
+    name              = string
+    flavor            = string
+    image_id          = string
+    port_names        = list(string)
+    availability_zone = string
   }))
-  description = "List of instances with multiple subnet and security group names"
+  description = "List of ECS instances using NICs (ports)"
 }
 
 variable "ssh_key_name" {
   type        = string
   description = "SSH key name for instances"
+}
+
+variable "ports" {
+  description = "Map of port definitions"
+  type = map(object({
+    subnet_name          = string
+    security_group_names = list(string)
+  }))
 }
 
 variable "subnet_ids" {
