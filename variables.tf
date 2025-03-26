@@ -84,35 +84,32 @@ variable "availability_zone" {
   description = "Availability zone for the subnets and VMs"
   type        = string
 }
+#------------------------------------------------------------------------------------
+# variables for Ports/NIC
+#------------------------------------------------------------------------------------
+variable "ports" {
+  description = "Map of port definitions"
+  type = map(object({
+    subnet_name          = string
+    security_group_names = list(string)
+  }))
+}
 
 #------------------------------------------------------------------------------------
 # variables for VMs
 #------------------------------------------------------------------------------------
 variable "instances" {
   type = list(object({
-    name                 = string
-    flavor               = string
-    image_id             = string
-    subnet_names         = list(string)
-    security_group_names = list(string)
-    availability_zone    = string
+    name              = string
+    flavor            = string
+    image_id          = string
+    port_names        = list(string)
+    availability_zone = string
   }))
-  description = "List of instances with multiple subnet and security group names"
+  description = "List of ECS instances using defined ports"
 }
 
-
 variable "ssh_key_name" { type = string }
-
-
-
-
-
-# variable "project_name" {
-#   description = "The project (tenant) abk-test for the OTC account"
-#   type        = string
-# }
-
-
 
 
 
