@@ -57,7 +57,7 @@ resource "opentelekomcloud_networking_secgroup_rule_v2" "sg_prod_http_in" {
   protocol          = "tcp"
   port_range_min    = 80
   port_range_max    = 80
-  remote_group_id   = opentelekomcloud_networking_secgroup_v2.sg_dmz.id
+  remote_group_id = opentelekomcloud_networking_secgroup_v2.security_group1.id
 }
 
 # Allow HTTPS (443) from DMZ to the Production LAN
@@ -68,7 +68,7 @@ resource "opentelekomcloud_networking_secgroup_rule_v2" "sg_prod_https_in" {
   protocol          = "tcp"
   port_range_min    = 443
   port_range_max    = 443
-  remote_group_id   = opentelekomcloud_networking_secgroup_v2.sg_dmz.id
+  remote_group_id = opentelekomcloud_networking_secgroup_v2.security_group1.id
 }
 
 
@@ -100,3 +100,4 @@ resource "opentelekomcloud_networking_secgroup_rule_v2" "sg_mgmt_rdp_in" {
   port_range_max    = 3389
   remote_ip_prefix  = "10.168.150.0/24"
 }
+#------------------------------------------------------------------------------------
