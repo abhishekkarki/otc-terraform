@@ -108,8 +108,6 @@ variable "instances" {
   }))
   description = "List of ECS instances using defined ports"
 }
+#------------------------------------------------------------------------------------
 
 variable "ssh_key_name" { type = string }
-
-
-
