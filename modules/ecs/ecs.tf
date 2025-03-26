@@ -1,28 +1,34 @@
-resource "openstack_compute_instance_v2" "instance" {
-  count       = "${var.ecs_count}"
-  name        = "${var.name}${format("%02d", count.index+1)}"
-  image_name  = "${var.image}"
-  flavor_name = "${var.flavor}"
-  key_pair    = "${openstack_compute_keypair_v2.keypair.name}"
-  user_data   = "${var.user_data}"
+resource "opentelekomcloud_compute_instance_v2" "instances" {
+  count       = length(var.instances)
+  name        = var.instances[count.index].name
+  flavor_name = var.instances[count.index].flavor
+  image_id    = var.instances[count.index].image_id
+  key_pair    = var.ssh_key_name
+  availability_zone = var.instances[count.index].availability_zone 
+
+  # Attach primary subnet
   network {
-    uuid = "${var.network_id}"
+    uuid = lookup(var.subnet_ids, var.instances[count.index].subnet_names[0])
   }
+
+  # Attach additional subnets if available
+  dynamic "network" {
+    for_each = slice(var.instances[count.index].subnet_names, 1, length(var.instances[count.index].subnet_names))
+    content {
+      uuid = lookup(var.subnet_ids, network.value)
+    }
+  }
+
+  # Attach multiple ports dynamically
+  dynamic "network" {
+    for_each = toset(var.instances[count.index].port_names)
+    content {
+      port = opentelekomcloud_networking_port_v2.ports["${var.instances[count.index].name}-${network.value}"].id
+    }
+  }
+
+  # Attach multiple security groups dynamically
+  security_groups = [for sg in var.instances[count.index].security_group_names : lookup(var.security_group_ids, sg)]
 }
 
-resource "openstack_compute_floatingip_associate_v2" "instance_fip" {
-  count                 = "${var.attach_eip == "true" ? var.ecs_count : 0}"
-  floating_ip           = "${openstack_networking_floatingip_v2.fip.*.address[count.index]}"
-  instance_id           = "${openstack_compute_instance_v2.instance.*.id[count.index]}"
-  wait_until_associated = "true"
-}
 
-resource "openstack_networking_floatingip_v2" "fip" {
-  count    = "${var.attach_eip == "true" ? var.ecs_count : 0}"
-  pool     = "${var.ext_net_name}"
-}
-
-resource "openstack_compute_keypair_v2" "keypair" {
-  name       = "${var.name}-key"
-  public_key = "${var.pubkey}"
-}
