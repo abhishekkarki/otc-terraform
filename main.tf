@@ -13,6 +13,7 @@ module "vpc" {
     opentelekomcloud = opentelekomcloud
   }
 }
+#------------------------------------------------------------------------------------
 
 module "security_group" {
   source               = "./modules/security_group"
@@ -24,11 +25,14 @@ module "security_group" {
     opentelekomcloud = opentelekomcloud
   }
 }
+#------------------------------------------------------------------------------------
 
 module "compute" {
   source             = "./modules/compute"
   instances          = var.instances
   ssh_key_name       = var.ssh_key_name
+  ports              = var.ports
   subnet_ids         = module.vpc.subnet_ids
   security_group_ids = module.security_group.security_group_ids
 }
+#------------------------------------------------------------------------------------
